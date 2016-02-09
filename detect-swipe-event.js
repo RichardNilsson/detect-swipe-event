@@ -29,7 +29,7 @@ window.detectSwipeEvent = function (element, callback) {
     }, false);
 
     element.addEventListener("touchmove", function(event){
-        event.preventDefault();
+        //event.preventDefault();
         var t = event.touches[0];
         swipe_det.eX = t.screenX;
         swipe_det.eY = t.screenY;
@@ -79,22 +79,3 @@ window.detectSwipeEvent = function (element, callback) {
 
     }, false);
 };
-
-
-
-/**
- * Code to test and verify or as default behaviour.
- */
-window.detectSwipeEvent(window, function (element, direction) {
-
-    console.log("you swiped on element " + element + " to " + direction + " direction");
-
-    switch (direction)  {
-        case "left":
-            window.history.back();
-            break;
-        case "right":
-            window.history.go(1);
-            break;
-    }
-});
