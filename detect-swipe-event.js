@@ -9,73 +9,87 @@
  * with parameter element and the string left, right, up, down.
  *
  */
-window.detectSwipeEvent = function (element, callback) {
-    var swipe_det = {};
-    var min_x = 30;  //min x swipe for horizontal swipe
-    var max_x = 30;  //max x difference for vertical swipe
-    var min_y = 50;  //min y swipe for vertical swipe
-    var max_y = 60;  //max y difference for horizontal swipe
+window.detectSwipeEvent = function(element, callback) {
+    var swipeDetection = {};
+    var minX = 30; //min x swipe for horizontal swipe
+    var maxX = 30; //max x difference for vertical swipe
+    var minY = 50; //min y swipe for vertical swipe
+    var maxY = 60; //max y difference for horizontal swipe
     var direction = "";
 
-    swipe_det.sX = 0;
-    swipe_det.sY = 0;
-    swipe_det.eX = 0;
-    swipe_det.eY = 0;
+    swipeDetection.sX = 0;
+    swipeDetection.sY = 0;
+    swipeDetection.eX = 0;
+    swipeDetection.eY = 0;
 
-    element.addEventListener("touchstart", function(event){
-        var t = event.touches[0];
-        swipe_det.sX = t.screenX;
-        swipe_det.sY = t.screenY;
-    }, false);
+    element.addEventListener(
+        "touchstart",
+        function(event) {
+            var t = event.touches[0];
 
-    element.addEventListener("touchmove", function(event){
-        //event.preventDefault();
-        var t = event.touches[0];
-        swipe_det.eX = t.screenX;
-        swipe_det.eY = t.screenY;
-    }, false);
+            swipeDetection.sX = t.screenX;
+            swipeDetection.sY = t.screenY;
+        },
+        false
+    );
 
-    element.addEventListener("touchend", function(/* event */) {
+    element.addEventListener(
+        "touchmove",
+        function(event) {
+            //event.preventDefault();
+            var t = event.touches[0];
 
-        // horizontal detection
-        if ((((swipe_det.eX - min_x > swipe_det.sX)
-            || (swipe_det.eX + min_x < swipe_det.sX))
-            && ((swipe_det.eY < swipe_det.sY + max_y)
-            && (swipe_det.sY > swipe_det.eY - max_y)
-            && (swipe_det.eX > 0))))
-        {
-            if (swipe_det.eX > swipe_det.sX) {
-                direction = "right";
-            } else {
-                direction = "left";
+            swipeDetection.eX = t.screenX;
+            swipeDetection.eY = t.screenY;
+        },
+        false
+    );
+
+    element.addEventListener(
+        "touchend",
+        function(/* event */) {
+            // horizontal detection
+            if (
+                (swipeDetection.eX - minX > swipeDetection.sX ||
+                    swipeDetection.eX + minX < swipeDetection.sX) &&
+                swipeDetection.eY < swipeDetection.sY + maxY &&
+                swipeDetection.sY > swipeDetection.eY - maxY &&
+                swipeDetection.eX > 0
+            ) {
+                if (swipeDetection.eX > swipeDetection.sX) {
+                    direction = "right";
+                } else {
+                    direction = "left";
+                }
+                // eslint-disable-next-line brace-style
             }
-        }
-
-        // vertical detection
-        else if ((((swipe_det.eY - min_y > swipe_det.sY)
-            || (swipe_det.eY + min_y < swipe_det.sY))
-            && ((swipe_det.eX < swipe_det.sX + max_x)
-            && (swipe_det.sX > swipe_det.eX - max_x)
-            && (swipe_det.eY > 0))))
-        {
-            if (swipe_det.eY > swipe_det.sY) {
-                direction = "down";
-            } else {
-                direction = "up";
-            }
-        }
-
-        if (direction !== "") {
-            if (typeof callback == "function") {
-                callback(element, direction);
+            // vertical detection
+            else if (
+                (swipeDetection.eY - minY > swipeDetection.sY ||
+                    swipeDetection.eY + minY < swipeDetection.sY) &&
+                swipeDetection.eX < swipeDetection.sX + maxX &&
+                swipeDetection.sX > swipeDetection.eX - maxX &&
+                swipeDetection.eY > 0
+            ) {
+                if (swipeDetection.eY > swipeDetection.sY) {
+                    direction = "down";
+                } else {
+                    direction = "up";
+                }
             }
 
-            direction = "";
-            swipe_det.sX = 0;
-            swipe_det.sY = 0;
-            swipe_det.eX = 0;
-            swipe_det.eY = 0;
-        }
+            if (direction !== "") {
+                if (typeof callback == "function") {
+                    callback(element, direction);
+                }
 
-    }, false);
+                direction = "";
+                swipeDetection.sX = 0;
+                swipeDetection.sY = 0;
+                swipeDetection.eX = 0;
+                swipeDetection.eY = 0;
+            }
+        },
+        false
+    );
 };
